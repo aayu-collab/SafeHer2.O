@@ -23,6 +23,13 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;//// deciding port (.env me ho to use karo otherwise default 5000)
 
+/////mongo DB
+require('dotenv').config();
+
+mongoose.connect(process.env.MONGO_URI)
+
+
+
 app.listen(PORT, () =>
   console.log(`Server running on port ${PORT}`)
 );/// server is starting 
