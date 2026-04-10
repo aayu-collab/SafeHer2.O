@@ -9,6 +9,12 @@ In emergency situations, women often do not have the time to unlock their phones
 - **Live Location Tracking 🌍**: Instantly captures the user's highest-accuracy GPS location when in danger.
 - **Emergency Contacts 📱**: User-friendly interface to manage up to multiple trusted family members or friends.
 
+## 📱 How to Use the App
+1. **Create an Account:** Open the app and **Signup** using your Name, Email, and Phone number.
+2. **Add Emergency Contacts:** Go to the *Emergency Contacts* section (Phone Icon) and add the phone numbers of your trusted family or friends.
+3. **Manual SOS:** On the Home Page, tap the large red **SOS** button. It will count down for 3 seconds (giving you a chance to cancel) before grabbing your live GPS coordinates and texting your contacts via Twilio.
+4. **Voice SOS:** Tap the **Mic** icon at the bottom. The app will start listening in the background. Say the word **"help"**, and the app will instantly trigger the SOS alert entirely hands-free!
+
 ## 💻 Tech Stack
 - **Frontend**: Flutter (Cross-platform UI)
 - **Backend**: Node.js & Express (Robust APIs)
