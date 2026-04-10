@@ -29,7 +29,14 @@ In emergency situations, women often do not have the time to unlock their phones
 - A free [MongoDB Atlas](https://www.mongodb.com/) cluster URL.
 - A free Twilio Account for SMS API keys.
 
-### 1. Setup the Backend (Node.js)
+### 1. Clone the Repository
+Open your terminal and clone the repository to your local machine:
+```bash
+git clone https://github.com/aayu-collab/SafeHer2.O.git
+cd SafeHer
+```
+
+### 2. Setup the Backend (Node.js)
 1. Open a terminal and navigate to the backend directory:
    ```bash
    cd backend
