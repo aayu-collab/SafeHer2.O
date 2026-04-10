@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+//import 'SafeRoutePage.dart'; 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 void main() {
   runApp(SafeHerApp());
 }
@@ -83,6 +89,8 @@ class _HomePageState extends State<HomePage> {
   bool voiceEnabled = false;
   late stt.SpeechToText _speech;
 bool isListening = false;
+bool allowVoiceTrigger = true;
+bool isAlertSent = false;
 String spokenText = "";
 
   @override
@@ -121,7 +129,7 @@ String spokenText = "";
       /// 🔴 BODY
       body: Stack(
         children: [
-          /// SOS BUTTON
+          /// --------SOS BUTTON-----=-
           Center(
             child: GestureDetector(
               onTap: () {
@@ -198,6 +206,10 @@ String spokenText = "";
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 floatingActionButton: GestureDetector(
   onTap: () async {
+    //  Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => SOSPage()),
+    // );
     if (!isListening) {
       bool available = await _speech.initialize();
 
@@ -214,15 +226,45 @@ floatingActionButton: GestureDetector(
             });
 
             /// 🔥 SECRET WORD
-            if (spokenText.toLowerCase().contains("help")) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("SOS Triggered 🚨")),
-              );
+    //         if (isListening && spokenText.toLowerCase().contains("help")) {
+    //           // ScaffoldMessenger.of(context).showSnackBar(
+    //           //   SnackBar(content: Text("SOS Triggered 🚨")),
+    //           // );
 
-              print("🚨 SOS TRIGGERED");
-            }
-          },
-        );
+    //           //print("🚨 SOS TRIGGERED");
+    //           Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (_) => SOSPage()),
+    // );
+    //         }
+    //       },
+    //     );
+    if (isListening &&
+    allowVoiceTrigger &&
+    !isAlertSent &&
+    spokenText.toLowerCase().contains("help")) {
+
+  isAlertSent = true;        // 🔥 ek hi baar alert
+  allowVoiceTrigger = false; // 🔥 repeat block
+
+  // _speech.stop();
+
+  // setState(() {
+  //   isListening = false;
+  //   voiceEnabled = false;
+  // });
+
+  print("Alert sent successfully"); // 👈 ab sirf 1 baar aayega
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => SOSPage()),
+  ).then((_) {
+    // 🔥 wapas aane pe reset
+    allowVoiceTrigger = true;
+    isAlertSent = false;
+  });
+}});
       }
     } else {
       setState(() {
@@ -231,6 +273,8 @@ floatingActionButton: GestureDetector(
       });
 
       _speech.stop();
+       allowVoiceTrigger = true; // 🔥 reset
+  isAlertSent = false;      // 🔥 reset
     }
   },
 
@@ -266,6 +310,10 @@ floatingActionButton: GestureDetector(
               IconButton(
                 icon: Icon(Icons.location_on),
                 onPressed: () {
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => SafeRoutePage()),
+                  );
                   print("Map clicked");
                 },
               ),
@@ -315,42 +363,105 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   // 
-  void signup() async {
-    String name = nameController.text;
-    String contact = contactController.text;
-    String email = emailController.text;
-    String password = passwordController.text;
-    String confirmPassword = confirmPasswordController.text;
+  // void signup() async {
+  //   String name = nameController.text;
+  //   String contact = contactController.text;
+  //   String email = emailController.text;
+  //   String password = passwordController.text;
+  //   String confirmPassword = confirmPasswordController.text;
 
-    // 🔴 Validation
-    if (name.isEmpty ||
-        contact.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("All fields are required")));
-      return;
-    }
+  //   // 🔴 Validation
+  //   if (name.isEmpty ||
+  //       contact.isEmpty ||
+  //       email.isEmpty ||
+  //       password.isEmpty ||
+  //       confirmPassword.isEmpty) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text("All fields are required")));
+  //     return;
+  //   }
 
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Passwords do not match")));
-      return;
-    }
+  //   if (password != confirmPassword) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Passwords do not match")));
+  //     return;
+  //   }
 
-    // 💾 Save Data
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString("name", name);
-    await prefs.setString("contact", contact);
-    await prefs.setString("email", email);
-    await prefs.setString("password", password);
+  //   // 💾 Save Data
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString("name", name);
+  //   await prefs.setString("contact", contact);
+  //   await prefs.setString("email", email);
+  //   await prefs.setString("password", password);
 
-    // ✅ Navigate to Login Page
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => LoginPage()));
+  //   // ✅ Navigate to Login Page
+  //   Navigator.pushReplacement(
+  //       context, MaterialPageRoute(builder: (_) => LoginPage()));
+  // }
+
+
+void signup() async {
+  String name = nameController.text.trim();
+  String contact = contactController.text.trim();
+  String email = emailController.text.trim();
+  String password = passwordController.text.trim();
+  String confirmPassword = confirmPasswordController.text.trim();
+
+  // 🔴 1. Empty check
+  if (name.isEmpty ||
+      contact.isEmpty ||
+      email.isEmpty ||
+      password.isEmpty ||
+      confirmPassword.isEmpty) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("All fields are required")));
+    return;
   }
 
+  // 📧 2. Email validation (PROPER FORMAT)
+  if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
+      .hasMatch(email)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Enter valid email ❌")),
+    );
+    return;
+  }
+
+  // 📱 3. Contact validation (10 digit only)
+  if (!RegExp(r'^[0-9]{10}$').hasMatch(contact)) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Enter valid 10-digit contact number ❌")),
+    );
+    return;
+  }
+
+  // 🔐 4. Password length
+  if (password.length < 6) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Password must be at least 6 characters ❌")),
+    );
+    return;
+  }
+
+  // 🔐 5. Password match
+  if (password != confirmPassword) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Passwords do not match ❌")),
+    );
+    return;
+  }
+
+  // 💾 Save Data
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString("name", name);
+  await prefs.setString("contact", contact);
+  await prefs.setString("email", email);
+  await prefs.setString("password", password);
+
+  // ✅ Navigate
+  Navigator.pushReplacement(
+      context, MaterialPageRoute(builder: (_) => LoginPage()));
+}
 
 
   @override
@@ -1065,3 +1176,143 @@ class _SOSPageState extends State<SOSPage> {
     );
   }
 }
+//   -------saferoute--------
+
+class SafeRoutePage extends StatefulWidget {
+  @override
+  _SafeRoutePageState createState() => _SafeRoutePageState();
+}
+
+class _SafeRoutePageState extends State<SafeRoutePage> {
+  GoogleMapController? mapController;
+
+  LatLng currentPosition = LatLng(28.6139, 77.2090);
+
+  Set<Polyline> polylines = {};
+  Set<Marker> markers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentLocation();
+  }
+
+  // 📍 Get current location
+  Future<void> getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.requestPermission();
+    if (permission == LocationPermission.denied) return;
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    setState(() {
+      currentPosition = LatLng(position.latitude, position.longitude);
+    });
+
+    mapController?.animateCamera(
+      CameraUpdate.newLatLng(currentPosition),
+    );
+  }
+
+  // 🛣️ Fetch route from OSRM
+  Future<void> getRoute(LatLng destination) async {
+    final url = Uri.parse(
+      "http://router.project-osrm.org/route/v1/driving/"
+      "${currentPosition.longitude},${currentPosition.latitude};"
+      "${destination.longitude},${destination.latitude}"
+      "?overview=full&geometries=geojson",
+    );
+
+    final response = await http.get(url);
+    final data = jsonDecode(response.body);
+
+    List coords = data['routes'][0]['geometry']['coordinates'];
+
+    List<LatLng> routePoints = coords
+        .map((e) => LatLng(e[1], e[0]))
+        .toList();
+
+    setState(() {
+      polylines.clear();
+      polylines.add(
+        Polyline(
+          polylineId: PolylineId("route"),
+          points: routePoints,
+          color: Colors.green,
+          width: 5,
+        ),
+      );
+    });
+  }
+
+  // 🚔 Fetch police stations
+  Future<void> getPoliceStations() async {
+    final url = Uri.parse(
+      "https://overpass-api.de/api/interpreter?data=[out:json];"
+      "node(around:2000,${currentPosition.latitude},${currentPosition.longitude})"
+      "[amenity=police];out;",
+    );
+
+    final response = await http.get(url);
+    final data = jsonDecode(response.body);
+
+    Set<Marker> policeMarkers = {};
+
+    for (var element in data['elements']) {
+      policeMarkers.add(
+        Marker(
+          markerId: MarkerId(element['id'].toString()),
+          position: LatLng(element['lat'], element['lon']),
+          icon: BitmapDescriptor.defaultMarkerWithHue(
+            BitmapDescriptor.hueBlue,
+          ),
+          infoWindow: InfoWindow(title: "Police Station"),
+        ),
+      );
+    }
+
+    setState(() {
+      markers.addAll(policeMarkers);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Safe Route"),
+        backgroundColor: Colors.blue,
+      ),
+
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: currentPosition,
+          zoom: 14,
+        ),
+        onMapCreated: (controller) {
+          mapController = controller;
+          getPoliceStations(); // 👈 load police
+        },
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        polylines: polylines,
+        markers: markers,
+      ),
+
+      // 🔥 Button: Route generate
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          LatLng destination = LatLng(28.7041, 77.1025); // example
+          getRoute(destination);
+        },
+        child: Icon(Icons.directions),
+      ),
+    );
+  }
+}
+
+ 
