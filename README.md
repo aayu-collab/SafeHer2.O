@@ -1,34 +1,64 @@
-# 🛡️ SafeHer – Women Safety Web App
+# SafeHer 🚺
 
-## 📌 Overview  
-SafeHer ek women safety web application hai jo users ko emergency situations me help karta hai.  
-Isme user login system, emergency contacts, aur location tracking jaise features include hain taaki safety ensure ho sake.
+## 📌 Problem Statement
+In emergency situations, women often do not have the time to unlock their phones, open an app, and manually send an alert. There is a critical need for an accessible solution that provides an instant, hands-free way to reach out for help, even with weak or zero internet access. **SafeHer** is designed to empower women with swift, reliable emergency features like voice-activated SOS and offline SMS alerts to bridge this gap.
 
----
+## 🚀 Features
+- **Voice SOS 🎤**: Triggers an emergency alert completely hands-free by simply speaking a specific keyword (like *"help"*).
+- **Offline Alert (SMS) 📩**: Automatically sends SMS alerts containing live GPS coordinates to trusted contacts via GSM/Twilio, ensuring safety even in critical situations.
+- **Live Location Tracking 🌍**: Instantly captures the user's highest-accuracy GPS location when in danger.
+- **Emergency Contacts 📱**: User-friendly interface to manage up to multiple trusted family members or friends.
 
-## 🚀 Features  
-- 🔐 User Authentication (Login / Register)  
-- 📞 Emergency Contact Save karna  
-- 📍 Live Location Tracking (Maps integration)  
-- 🚨 Emergency Alert System  
-- 🌐 Simple & User-Friendly Interface  
+## 💻 Tech Stack
+- **Frontend**: Flutter (Cross-platform UI)
+- **Backend**: Node.js & Express (Robust APIs)
+- **Database**: MongoDB (Secure cloud storage for users/contacts)
+- **Communications**: GSM / Twilio API (For direct offline SMS notifications)
 
----
+## 🛠️ How to Run the Project Locally
 
-## 🛠️ Tech Stack  
+### Prerequisites
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) installed.
+- [Node.js](https://nodejs.org/) installed.
+- A free [MongoDB Atlas](https://www.mongodb.com/) cluster URL.
+- A free Twilio Account for SMS API keys.
 
-### Frontend  
-- HTML  
-- CSS  
-- JavaScript  
+### 1. Setup the Backend (Node.js)
+1. Open a terminal and navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+2. Install the required Node dependencies:
+   ```bash
+   npm install
+   ```
+3. Create a `.env` file in the `backend` folder and add your credentials:
+   ```env
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   PORT=5000
+   TWILIO_SID=your_twilio_account_sid
+   TWILIO_AUTH_TOKEN=your_twilio_auth_token
+   TWILIO_PHONE=your_twilio_phone_number
+   ```
+4. Start the backend server:
+   ```bash
+   node server.js
+   ```
 
-### Backend  
-- Node.js  
-- Express.js  
+### 2. Setup the Frontend (Flutter)
+1. Open a new terminal and navigate to the Flutter project folder:
+   ```bash
+   cd "frontend/safeher project/my_app"
+   ```
+2. Download all the required Flutter packages:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app on an Emulator or Google Chrome:
+   ```bash
+   flutter run
+   ```
 
-### Database  
-- MongoDB (Mongoose)
-
----
-
-## 📂 Project Structure
+## 🛡️ License
+This project is open-source and intended to contribute to community safety.
