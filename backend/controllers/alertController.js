@@ -1,15 +1,37 @@
-const Alert = require("../models/Alert");//importing the alert model (MongoDB scheme)(this is where data alert will be stored)
+const Alert = require("../models/Alert");
+const Contact = require("../models/Contact");
+const twilio = require("twilio");
 
-exports.sendAlert = async (req, res) => {// creating a function sendalert ,,,export means u can use it in ur routes,, async bcz database operations take time
-  const { latitude, longitude } = req.body;// getting location from frontened 
+exports.sendAlert = async (req, res) => {
+  const { latitude, longitude } = req.body;
 
-  const alert = new Alert({// creating a new alert object
-    userId: req.user.id,// IMPORTANT bcz it gets logged in IDs from authentication middleware (that means user must be logged in )
-    latitude,//saving location in database
-    longitude,
-  });
+  try {
+    const alert = new Alert({
+      userId: req.user.id,
+      latitude,
+      longitude,
+    });
+    await alert.save();
 
-  await alert.save();//saving alert in mongoDB 
+    // Fetch user contacts
+    const contacts = await Contact.find({ userId: req.user.id });
+    
+    // Twist into action if Twilio keys exist
+    if (process.env.TWILIO_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE) {
+      const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+      const messageBody = `🚨 SAFEHER EMERGENCY: I AM IN DANGER! Please help me. Location: https://maps.google.com/?q=${latitude},${longitude}`;
 
-  res.json({ msg: "🚨 SOS Alert Sent" });//sending response back to frontend(shows succes message)
+      for (let contact of contacts) {
+        await client.messages.create({
+          body: messageBody,
+          from: process.env.TWILIO_PHONE,
+          to: contact.phone
+        }).catch(err => console.error("SMS Error:", err.message));
+      }
+    }
+
+    res.json({ msg: "🚨 SOS Alert & SMS Sent" });
+  } catch (err) {
+    res.status(500).json({ msg: "Error sending alert" });
+  }
 };
