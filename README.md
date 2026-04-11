@@ -73,7 +73,7 @@ cd SafeHer
    flutter run
    ```
 
-   https://github.com/aayu-collab/SafeHer2.O/blob/0235979fa8e5bc4396384ea4d9e9c179acee7e3b/Screenshot%202026-04-11%20050647.png
+   ![image alt](https://github.com/aayu-collab/SafeHer2.O/blob/0235979fa8e5bc4396384ea4d9e9c179acee7e3b/Screenshot%202026-04-11%20050647.png)
 
 ## 🛡️ License
 This project is open-source and intended to contribute to community safety.
