@@ -72,7 +72,7 @@ cd SafeHer
    ```bash
    flutter run
    ```
-
+![image alt](https://github.com/aayu-collab/SafeHer2.O/blob/a3fb4af17fce16222f6485fa5de714d30d883a4d/Screenshot%202026-04-11%20050818.png)
    
 ## 🛡️ License
 This project is open-source and intended to contribute to community safety.
